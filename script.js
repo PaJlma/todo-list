@@ -1,4 +1,6 @@
-const addTaskButton = document.querySelector('.header__add-task-button')
+const addTaskButton = document.querySelector('.header__add-task-button');
+const taskCases = document.getElementsByClassName('task');
+const textArea = document.querySelector('textarea');
 
 class Task {
     constructor (title) {
@@ -6,8 +8,22 @@ class Task {
             title = prompt('Введите имя задачи:')
         } 
         this.title = title;
-        generateTaskDOM(title)
+        const id = title;
+        this.element = generateTaskDOM(title, id)
     };
+
+    static create() {
+        const newObject = new this();
+        return newObject;
+    }   
+
+    static remove(object) {
+        if (object instanceof Task) {
+            
+        } else {
+            throw new Error(`${object} is not instance of ${this}`)
+        }
+    }
 
     text = '';
 };
@@ -32,13 +48,20 @@ function getTime() {
     return `${newTimeArray[0]}.${newTimeArray[1]}.${newTimeArray[2]} ${newTimeArray[3]}:${newTimeArray[4]}`;
 }
 
-function generateTaskDOM(title) {
+function generateTaskDOM(title, id) {
+    for (let key of Object.keys(localStorage)) {
+        if (key === id) {
+            alert(`Error! Task "${id}" is already exists!`);
+            return 0;
+        }
+    }
+
     if (title !== '' && title !== null) {
         const time = getTime()
         const sidebar = document.querySelector('.sidebar');
         const task = document.createElement('div');
         task.className = 'sidebar__task task';
-        // task.id = id;
+        task.id = id;
         task.innerHTML = `
             <div class="task__main-info">
                 <h4 class="task__title">${title}</h4>
@@ -47,11 +70,16 @@ function generateTaskDOM(title) {
             <p class="task__text"></p>
         `;
         sidebar.append(task);
-        localStorage.setItem(localStorage.length+1, task.innerHTML);
+        localStorage.setItem(id, task.innerHTML);
+        return task;
     } else {
-        alert('Name is Null');
+        alert('Task name is empty');
     };
 };
+
+function eventClickOnTask(event) {
+    console.log(event.currentTarget.id)
+}
 
 function loadOldTasks() {
     const sidebar = document.querySelector('.sidebar');
@@ -59,12 +87,23 @@ function loadOldTasks() {
         const inner = localStorage.getItem(index);
         const task = document.createElement('div');
         task.className = 'sidebar__task task';
+        task.id = inner.slice(inner.indexOf('title">')+7, inner.indexOf('</h4>'));
         task.innerHTML = inner;
         sidebar.append(task);
     }
 }
 
-// localStorage.clear()
+localStorage.clear()
 
-loadOldTasks();
-addTaskButton.addEventListener('click', () => new Task())
+loadOldTasks(); 
+for (let value of taskCases) {
+    value.addEventListener('click', eventClickOnTask);
+}
+
+addTaskButton.addEventListener('click', Task.create.bind(Task))
+
+console.log(localStorage)
+
+const task = new Task('Абубачир');
+task.text = 'Абубачир';
+textArea.innerText = task.text;
