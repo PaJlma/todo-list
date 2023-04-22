@@ -27,7 +27,7 @@ function getTime() {
 }
 
 function generateTaskDOM(title = prompt('Введите имя задачи:')) {
-    if (title !== '') {
+    if (title !== '' && title !== null) {
         const time = getTime()
         const sidebar = document.querySelector('.sidebar');
         const task = document.createElement('div');
@@ -46,4 +46,4 @@ function generateTaskDOM(title = prompt('Введите имя задачи:')) 
     };
 };
 
-new Task()
+addTaskButton.addEventListener('click', () => new Task())
