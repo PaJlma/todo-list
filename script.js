@@ -1,5 +1,7 @@
 const addTaskButton = document.querySelector('.header__add-task-button');
 const taskCases = document.getElementsByClassName('task');
+const saveChangesButton = document.querySelector('.textarea-place__textarea-save-changes');
+let activeTask = null;
 
 class Task {
     constructor (title) {
@@ -83,11 +85,24 @@ function generateTaskDOM(title, id) {
 function eventClickOnTask(event) {
     const headerTaskName = document.querySelector('.header__task-title');
     const textArea = document.querySelector('textarea');
-    console.log(event.currentTarget.id)
     const taskID = event.currentTarget.id;
+    activeTask = taskID;
     const taskObject = JSON.parse(localStorage.getItem(taskID));
-    textArea.innerText = taskObject.text;
+    textArea.innerText = taskObject.text.replaceAll('\n', ' ');
     headerTaskName.innerText = taskObject.title;
+}
+
+function eventClickOnSaveChanges() {
+    if (activeTask === null) {
+        alert("No task to change");
+    } else {
+        const textArea = document.querySelector('textarea');
+        const activeTaskObject = JSON.parse(localStorage.getItem(activeTask));
+        let changes = textArea.value;
+        activeTaskObject.text = changes;
+        localStorage.removeItem(activeTask);
+        localStorage.setItem(activeTask, JSON.stringify(activeTaskObject));
+    }
 }
 
 function loadOldTasks() {
@@ -109,6 +124,7 @@ for (let value of taskCases) {
     value.addEventListener('click', eventClickOnTask);
 }
 
+saveChangesButton.addEventListener('click', eventClickOnSaveChanges);
 addTaskButton.addEventListener('click', Task.create.bind(Task))
 
 console.log(localStorage)
