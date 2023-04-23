@@ -127,9 +127,13 @@ function loadOldTasks() {
 
 function eventClearAllTasks() {
     if (confirm('Are you sure you want to delete all tasks?')) {
+        const textArea = document.querySelector('textarea');
+        const headerTaskName = document.querySelector('.header__task-title');
         for (let taskCase of taskCases) {
             taskCase.remove()
         }
+        textArea.value = '';
+        headerTaskName.innerText = '';
         localStorage.clear()
     } else {
         return 0
