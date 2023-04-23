@@ -1,6 +1,5 @@
 const addTaskButton = document.querySelector('.header__add-task-button');
 const taskCases = document.getElementsByClassName('task');
-const textArea = document.querySelector('textarea');
 
 class Task {
     constructor (title) {
@@ -9,11 +8,16 @@ class Task {
         } 
         this.title = title;
         const id = title;
-        this.element = generateTaskDOM(title, id)
+        const element = generateTaskDOM(title, id);
+        element.addEventListener('click', eventClickOnTask);
+        this.element = element.innerHTML;
     };
 
     static create() {
         const newObject = new this();
+        const inner = newObject.element;
+        const id = inner.slice(inner.indexOf('title">')+7, inner.indexOf('</h4>'))
+        localStorage.setItem(id, JSON.stringify(newObject));
         return newObject;
     }   
 
@@ -70,7 +74,6 @@ function generateTaskDOM(title, id) {
             <p class="task__text"></p>
         `;
         sidebar.append(task);
-        localStorage.setItem(id, task.innerHTML);
         return task;
     } else {
         alert('Task name is empty');
@@ -78,22 +81,28 @@ function generateTaskDOM(title, id) {
 };
 
 function eventClickOnTask(event) {
+    const headerTaskName = document.querySelector('.header__task-title');
+    const textArea = document.querySelector('textarea');
     console.log(event.currentTarget.id)
+    const taskID = event.currentTarget.id;
+    const taskObject = JSON.parse(localStorage.getItem(taskID));
+    textArea.innerText = taskObject.text;
+    headerTaskName.innerText = taskObject.title;
 }
 
 function loadOldTasks() {
     const sidebar = document.querySelector('.sidebar');
-    for (let index = 1; index <= localStorage.length; index++) {
-        const inner = localStorage.getItem(index);
-        const task = document.createElement('div');
-        task.className = 'sidebar__task task';
-        task.id = inner.slice(inner.indexOf('title">')+7, inner.indexOf('</h4>'));
-        task.innerHTML = inner;
-        sidebar.append(task);
+    for (let task of Object.keys(localStorage)) {
+        const inner = JSON.parse(localStorage.getItem(task)).element;
+        const oldTask = document.createElement('div');
+        oldTask.className = 'sidebar__task task';
+        oldTask.id = inner.slice(inner.indexOf('title">')+7, inner.indexOf('</h4>'));
+        oldTask.innerHTML = inner;
+        sidebar.append(oldTask);
     }
 }
 
-localStorage.clear()
+// localStorage.clear()
 
 loadOldTasks(); 
 for (let value of taskCases) {
@@ -103,7 +112,3 @@ for (let value of taskCases) {
 addTaskButton.addEventListener('click', Task.create.bind(Task))
 
 console.log(localStorage)
-
-const task = new Task('Абубачир');
-task.text = 'Абубачир';
-textArea.innerText = task.text;
