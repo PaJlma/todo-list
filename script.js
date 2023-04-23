@@ -88,7 +88,7 @@ function eventClickOnTask(event) {
     const taskID = event.currentTarget.id;
     activeTask = taskID;
     const taskObject = JSON.parse(localStorage.getItem(taskID));
-    textArea.innerText = taskObject.text.replaceAll('\n', ' ');
+    textArea.value = taskObject.text.replaceAll('\n', ' ');
     headerTaskName.innerText = taskObject.title;
 }
 
@@ -100,7 +100,6 @@ function eventClickOnSaveChanges() {
         const activeTaskObject = JSON.parse(localStorage.getItem(activeTask));
         let changes = textArea.value;
         activeTaskObject.text = changes;
-        localStorage.removeItem(activeTask);
         localStorage.setItem(activeTask, JSON.stringify(activeTaskObject));
     }
 }
@@ -117,7 +116,7 @@ function loadOldTasks() {
     }
 }
 
-// localStorage.clear()
+// localStorage.clear() 
 
 loadOldTasks(); 
 for (let value of taskCases) {
