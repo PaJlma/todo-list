@@ -1,6 +1,6 @@
 const addTaskButton = document.querySelector('.header__add-task-button');
 const taskCases = document.getElementsByClassName('task');
-const saveChangesButton = document.querySelector('.textarea-place__textarea-save-changes');
+const saveChangesButton = document.querySelector('.header__save-changes');
 let activeTask = null;
 
 class Task {
@@ -101,6 +101,7 @@ function eventClickOnSaveChanges() {
         let changes = textArea.value;
         activeTaskObject.text = changes;
         localStorage.setItem(activeTask, JSON.stringify(activeTaskObject));
+        alert('Changes have been saved!')
     }
 }
 
