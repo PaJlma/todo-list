@@ -13,6 +13,39 @@ body {
     border-right: 1px solid rgb(0, 0, 117);
 }
 
+.sidebar__header {
+    display: flex;
+    justify-content: flex-end;
+    padding: 30px;
+}
+
+.header__clear-tasks {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: 15px;
+    padding: 10px;
+    transition: 200ms;
+}
+
+.header__clear-tasks:hover {
+    background-color: rgb(88, 88, 88);
+}
+
+.header__clear-tasks-image {
+    width: 20px;
+    height: 20px;
+    background-image: url("images/trash.svg");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    transition: 200ms;
+}
+
+.header__clear-tasks:hover > .header__clear-tasks-image {
+    background-image: url("images/trash_active.svg");
+}
+
 .task {
     display: flex;
     flex-direction: column;
