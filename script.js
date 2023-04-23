@@ -24,12 +24,10 @@ class Task {
         return newObject;
     }   
 
-    static remove(object) {
-        if (object instanceof Task) {
-            
-        } else {
-            throw new Error(`${object} is not instance of ${this}`)
-        }
+    static remove(id) {
+        const elementToRemove = document.getElementById(id);
+        localStorage.removeItem(id);
+        elementToRemove.remove();
     }
 
     text = '';
@@ -92,7 +90,7 @@ function eventClickOnTask(event) {
     const taskID = event.currentTarget.id;
     activeTask = taskID;
     const taskObject = JSON.parse(localStorage.getItem(taskID));
-    textArea.value = taskObject.text.replaceAll('\n', ' ');
+    textArea.value = taskObject.text.replace('\n', ' ');
     headerTaskName.innerText = taskObject.title;
 }
 
@@ -152,3 +150,5 @@ saveChangesButton.addEventListener('click', eventClickOnSaveChanges);
 addTaskButton.addEventListener('click', Task.create.bind(Task));
 
 console.log(localStorage);
+
+// Task.remove('Абубачир');
