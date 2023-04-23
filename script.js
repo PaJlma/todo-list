@@ -65,6 +65,7 @@ function generateTaskDOM(title, id) {
     if (title !== '' && title !== null) {
         const time = getTime()
         const sidebar = document.querySelector('.sidebar');
+        const headerTaskName = document.querySelector('.header__task-title');
         const task = document.createElement('div');
         task.className = 'sidebar__task task';
         task.id = id;
@@ -76,6 +77,8 @@ function generateTaskDOM(title, id) {
             <p class="task__text"></p>
         `;
         sidebar.append(task);
+        activeTask = id;
+        headerTaskName.innerText = id;
         return task;
     } else {
         alert('Task name is empty');
@@ -99,9 +102,13 @@ function eventClickOnSaveChanges() {
         const textArea = document.querySelector('textarea');
         const activeTaskObject = JSON.parse(localStorage.getItem(activeTask));
         let changes = textArea.value;
-        activeTaskObject.text = changes;
-        localStorage.setItem(activeTask, JSON.stringify(activeTaskObject));
-        alert('Changes have been saved!')
+        if (activeTaskObject.text === textArea.value) {
+            alert('Nothing to save')
+        } else {
+            activeTaskObject.text = changes;
+            localStorage.setItem(activeTask, JSON.stringify(activeTaskObject));
+            alert('Changes have been saved!')
+        }
     }
 }
 
