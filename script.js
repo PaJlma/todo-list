@@ -1,6 +1,7 @@
 const addTaskButton = document.querySelector('.header__add-task-button');
 const taskCases = document.getElementsByClassName('task');
 const saveChangesButton = document.querySelector('.header__save-changes');
+const clearTasksButton = document.querySelector('.header__clear-tasks');
 let activeTask = null;
 
 class Task {
@@ -124,14 +125,24 @@ function loadOldTasks() {
     }
 }
 
-// localStorage.clear() 
+function eventClearAllTasks() {
+    if (confirm('Are you sure you want to delete all tasks?')) {
+        for (let taskCase of taskCases) {
+            taskCase.remove()
+        }
+        localStorage.clear()
+    } else {
+        return 0
+    }
+}
 
 loadOldTasks(); 
 for (let value of taskCases) {
     value.addEventListener('click', eventClickOnTask);
 }
 
+clearTasksButton.addEventListener('click', eventClearAllTasks);
 saveChangesButton.addEventListener('click', eventClickOnSaveChanges);
-addTaskButton.addEventListener('click', Task.create.bind(Task))
+addTaskButton.addEventListener('click', Task.create.bind(Task));
 
-console.log(localStorage)
+console.log(localStorage);

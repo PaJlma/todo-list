@@ -16,7 +16,7 @@ body {
 .sidebar__header {
     display: flex;
     justify-content: flex-end;
-    padding: 30px;
+    padding: 20px;
 }
 
 .header__clear-tasks {
