@@ -61,9 +61,9 @@ body {
 
 .header__block {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 10px;
 }
 
 .header__add-task-button {
@@ -91,6 +91,33 @@ body {
 
 .header__add-task-button:hover > .header__add-task-image {
     background-image: url("images/plus_active.svg");
+}
+
+.header__save-changes {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: 15px;
+    padding: 10px;
+    transition: 200ms;
+}
+
+.header__save-changes:hover {
+    background-color: rgb(88, 88, 88);
+}
+
+.header__save-changes-image {
+    width: 20px;
+    height: 20px;
+    background-image: url("images/save.svg");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    transition: 200ms;
+}
+
+.header__save-changes:hover > .header__save-changes-image {
+    background-image: url("images/save_active.svg");
 }
 
 .textarea-place__textarea {
