@@ -100,7 +100,7 @@ function eventClickOnTask(event) {
     const taskID = event.currentTarget.id;
     activeTask = taskID;
     const taskObject = JSON.parse(localStorage.getItem(taskID));
-    textArea.value = taskObject.text.replace('\n', ' ');
+    textArea.value = taskObject.text//.replace('\n', ' ');
     headerTaskName.innerText = taskObject.title;
 }
 
