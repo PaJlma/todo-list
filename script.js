@@ -66,6 +66,7 @@ function generateTaskDOM(title, id) {
         const sidebar = document.querySelector('.sidebar');
         const headerTaskName = document.querySelector('.header__task-title');
         const task = document.createElement('div');
+        const textarea = document.querySelector('textarea');
         task.className = 'sidebar__task task';
         task.id = id;
         task.innerHTML = `
@@ -73,10 +74,14 @@ function generateTaskDOM(title, id) {
                 <h4 class="task__title">${title}</h4>
                 <p class="task__time">${time}</p>
             </div>
-            <p class="task__text"></p>
+            <div class="task__info">
+                <p class="task__text"></p>
+                <div class="task__status"></div>
+            </div>
         `;
         sidebar.append(task);
         activeTask = id;
+        textarea.value = '';
         headerTaskName.innerText = id;
         return task;
     } else {

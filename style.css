@@ -53,6 +53,7 @@ body {
     padding: 20px;
     cursor: pointer;
     transition: 200ms;
+    min-height: 90px;
 }
 
 .task__main-info {
@@ -72,13 +73,31 @@ body {
     font-weight: 300;
 }
 
+.task__info {
+    display: flex;
+    justify-content: space-between;
+}
+
 .task__text {
     font-weight: 300;
     font-size: 14px;
 }
 
+.task__status {
+    opacity: 0;
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    border-radius: 100px;
+    transition: 200ms;
+}
+
 .task:hover {
     background-color: rgb(0, 0, 117);
+}
+
+.task:hover .task__status {
+    opacity: 1;
 }
 
 .main {
