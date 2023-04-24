@@ -1,7 +1,7 @@
-const addTaskButton = document.querySelector('.header__add-task-button');
 const taskCases = document.getElementsByClassName('task');
-const saveChangesButton = document.querySelector('.header__save-changes');
-const clearTasksButton = document.querySelector('.header__clear-tasks');
+const saveChangesButton = document.querySelector('#save-changes');
+const clearTasksButton = document.querySelector('#clear-all-tasks');
+const addTaskButton = document.querySelector('#add-task');
 let activeTask = null;
 
 class Task {
@@ -30,6 +30,7 @@ class Task {
         elementToRemove.remove();
     }
 
+    status = false;
     text = '';
 };
 
@@ -145,10 +146,14 @@ function eventClearAllTasks() {
     }
 }
 
-loadOldTasks(); 
-for (let value of taskCases) {
-    value.addEventListener('click', eventClickOnTask);
+function eventChangeTaskStatus() {
+
 }
+
+loadOldTasks(); 
+for (let taskCase of taskCases) {
+    taskCase.addEventListener('click', eventClickOnTask);
+};
 
 clearTasksButton.addEventListener('click', eventClearAllTasks);
 saveChangesButton.addEventListener('click', eventClickOnSaveChanges);
