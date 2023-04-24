@@ -2,6 +2,8 @@ const taskCases = document.getElementsByClassName('task');
 const saveChangesButton = document.querySelector('#save-changes');
 const clearTasksButton = document.querySelector('#clear-all-tasks');
 const addTaskButton = document.querySelector('#add-task');
+const changeStatusButton = document.querySelector('#change-status');
+const deleteTaskButtons = document.getElementsByClassName('task__delete');
 let activeTask = null;
 
 class Task {
@@ -13,6 +15,7 @@ class Task {
         const id = title;
         const element = generateTaskDOM(title, id);
         element.addEventListener('click', eventClickOnTask);
+        element.querySelector('.task__delete').addEventListener('click', eventDeleteTask);
         this.element = element.innerHTML;
     };
 
@@ -79,6 +82,7 @@ function generateTaskDOM(title, id) {
                 <p class="task__text"></p>
                 <div class="task__status"></div>
             </div>
+            <button class="task__delete"></button>
         `;
         sidebar.append(task);
         activeTask = id;
@@ -89,7 +93,7 @@ function generateTaskDOM(title, id) {
         alert('Task name is empty');
     };
 };
-
+ 
 function eventClickOnTask(event) {
     const headerTaskName = document.querySelector('.header__task-title');
     const textArea = document.querySelector('textarea');
@@ -105,12 +109,15 @@ function eventClickOnSaveChanges() {
         alert("No task to change");
     } else {
         const textArea = document.querySelector('textarea');
+        const taskDescription = document.getElementById(activeTask).querySelector('.task__text');
+
         const activeTaskObject = JSON.parse(localStorage.getItem(activeTask));
         let changes = textArea.value;
         if (activeTaskObject.text === textArea.value) {
             alert('Nothing to save')
         } else {
             activeTaskObject.text = changes;
+            taskDescription.innerText = changes.slice(0, 150) + '...';
             localStorage.setItem(activeTask, JSON.stringify(activeTaskObject));
             alert('Changes have been saved!')
         }
@@ -122,9 +129,17 @@ function loadOldTasks() {
     for (let task of Object.keys(localStorage)) {
         const inner = JSON.parse(localStorage.getItem(task)).element;
         const oldTask = document.createElement('div');
+        const taskObject = JSON.parse(localStorage.getItem(task));
         oldTask.className = 'sidebar__task task';
         oldTask.id = inner.slice(inner.indexOf('title">')+7, inner.indexOf('</h4>'));
         oldTask.innerHTML = inner;
+        if (taskObject.status === true) {
+            oldTask.querySelector('.task__status').style.backgroundColor = 'green';
+        } else {
+            oldTask.querySelector('.task__status').style.backgroundColor = 'red';
+        }
+
+        oldTask.querySelector('.task__text').innerText = taskObject.text.slice(0, 150) + '...';
         sidebar.append(oldTask);
     }
 }
@@ -147,7 +162,34 @@ function eventClearAllTasks() {
 }
 
 function eventChangeTaskStatus() {
+    const taskObject = JSON.parse(localStorage.getItem(activeTask));
+    const taskStatusCircle = document.getElementById(activeTask).querySelector('.task__status');
+    if (taskObject.status === false) {
+        taskObject.status = true;
+        taskStatusCircle.style.backgroundColor = 'green';
+    } else {
+        taskObject.status = false;
+        taskStatusCircle.style.backgroundColor = 'red';
+    }
+    localStorage.setItem(activeTask, JSON.stringify(taskObject));
+};
 
+function eventDeleteTask(event) {
+    if (confirm('Delete this task?')) {
+        const taskToDelete = event.currentTarget.parentNode;
+        const taskID = taskToDelete.id;
+        localStorage.removeItem(taskID);
+        taskToDelete.remove();
+        if (activeTask === taskID) {
+            const textArea = document.querySelector('textarea');
+            const headerTaskName = document.querySelector('.header__task-title');
+            textArea.value = '';
+            headerTaskName.innerText = '';
+            activeTask = null;
+        }
+    } else {
+        return 0
+    }
 }
 
 loadOldTasks(); 
@@ -155,10 +197,13 @@ for (let taskCase of taskCases) {
     taskCase.addEventListener('click', eventClickOnTask);
 };
 
+for (let deleteTaskButton of deleteTaskButtons) {
+    deleteTaskButton.addEventListener('click', eventDeleteTask);
+}
+
+changeStatusButton.addEventListener('click', eventChangeTaskStatus);
 clearTasksButton.addEventListener('click', eventClearAllTasks);
 saveChangesButton.addEventListener('click', eventClickOnSaveChanges);
 addTaskButton.addEventListener('click', Task.create.bind(Task));
 
 console.log(localStorage);
-
-// Task.remove('Абубачир');

@@ -27,6 +27,7 @@ body {
     cursor: pointer;
     transition: 200ms;
     min-height: 90px;
+    position: relative;
 }
 
 .task__main-info {
@@ -54,10 +55,11 @@ body {
 .task__text {
     font-weight: 300;
     font-size: 14px;
+    width: 300px;
+    word-wrap: break-word;
 }
 
 .task__status {
-    opacity: 0;
     width: 10px;
     height: 10px;
     background-color: red;
@@ -65,11 +67,32 @@ body {
     transition: 200ms;
 }
 
+.task__delete {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 100px;
+    border: 1px solid red;
+    background-image: url('images/delete.svg');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 70%;
+    transition: 200ms;
+    opacity: 0;
+}
+
+.task__delete:hover {
+    background-image: url('images/delete_active.svg');
+    background-color: red;
+}
+
 .task:hover {
     background-color: rgb(0, 0, 117);
 }
 
-.task:hover .task__status {
+.task:hover .task__delete {
     opacity: 1;
 }
 
