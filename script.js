@@ -145,7 +145,7 @@ function loadOldTasks() {
 }
 
 function eventClearAllTasks() {
-    if (confirm('Are you sure you want to delete all tasks?')) {
+    if (confirm('Delete all the tasks?')) {
         const taskCases = document.querySelectorAll('.task');
         const textArea = document.querySelector('textarea');
         const headerTaskName = document.querySelector('.header__task-title');
