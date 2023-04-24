@@ -23,19 +23,31 @@ class Task {
         const newObject = new this();
         const inner = newObject.element;
         const id = inner.slice(inner.indexOf('title">')+7, inner.indexOf('</h4>'))
-        localStorage.setItem(id, JSON.stringify(newObject));
+        appendIntoLocalStorage(id, newObject);
         return newObject;
     }   
 
     static remove(id) {
-        const elementToRemove = document.getElementById(id);
-        localStorage.removeItem(id);
-        elementToRemove.remove();
+        if (localStorage.getItem(id)) {
+            const elementToRemove = document.getElementById(id);
+            localStorage.removeItem(id);
+            elementToRemove.remove();
+        } else {
+            console.log('No task to remove')
+        }
     }
 
     status = false;
     text = '';
 };
+
+function readLocalStorage(id) {
+    return JSON.parse(localStorage.getItem(id));
+}
+
+function appendIntoLocalStorage(id, object) {
+    localStorage.setItem(id, JSON.stringify(object));
+}
 
 function getTime() {
     const now = new Date();
@@ -58,14 +70,12 @@ function getTime() {
 }
 
 function generateTaskDOM(title, id) {
-    for (let key of Object.keys(localStorage)) {
-        if (key === id) {
-            alert(`Error! Task "${id}" is already exists!`);
-            return 0;
-        }
+    if (localStorage.getItem(id)) {
+        alert(`Error! Task "${id}" is already exists!`);
+        return 0;
     }
 
-    if (title !== '' && title !== null) {
+    if (title !== '' && title !== null && title.length <= 50) {
         const time = getTime()
         const sidebar = document.querySelector('.sidebar');
         const headerTaskName = document.querySelector('.header__task-title');
@@ -90,7 +100,7 @@ function generateTaskDOM(title, id) {
         headerTaskName.innerText = id;
         return task;
     } else {
-        alert('Task name is empty');
+        alert('Task name is empty, or its bigger then 50 symbols');
     };
 };
  
@@ -99,7 +109,7 @@ function eventClickOnTask(event) {
     const textArea = document.querySelector('textarea');
     const taskID = event.currentTarget.id;
     activeTask = taskID;
-    const taskObject = JSON.parse(localStorage.getItem(taskID));
+    const taskObject = readLocalStorage(taskID);
     textArea.value = taskObject.text//.replace('\n', ' ');
     headerTaskName.innerText = taskObject.title.slice(0, 20);
 }
@@ -111,14 +121,14 @@ function eventClickOnSaveChanges() {
         const textArea = document.querySelector('textarea');
         const taskDescription = document.getElementById(activeTask).querySelector('.task__text');
 
-        const activeTaskObject = JSON.parse(localStorage.getItem(activeTask));
+        const activeTaskObject = readLocalStorage(activeTask);
         let changes = textArea.value;
         if (activeTaskObject.text === textArea.value) {
             alert('Nothing to save')
         } else {
             activeTaskObject.text = changes;
             taskDescription.innerText = changes.slice(0, 150) + '...';
-            localStorage.setItem(activeTask, JSON.stringify(activeTaskObject));
+            appendIntoLocalStorage(activeTask, activeTaskObject);
             alert('Changes have been saved!')
         }
     }
@@ -127,9 +137,9 @@ function eventClickOnSaveChanges() {
 function loadOldTasks() {
     const sidebar = document.querySelector('.sidebar');
     for (let task of Object.keys(localStorage)) {
-        const inner = JSON.parse(localStorage.getItem(task)).element;
         const oldTask = document.createElement('div');
-        const taskObject = JSON.parse(localStorage.getItem(task));
+        const taskObject = readLocalStorage(task);
+        const inner = taskObject.element;
         oldTask.className = 'sidebar__task task';
         oldTask.id = inner.slice(inner.indexOf('title">')+7, inner.indexOf('</h4>'));
         oldTask.innerHTML = inner;
@@ -162,7 +172,7 @@ function eventClearAllTasks() {
 }
 
 function eventChangeTaskStatus() {
-    const taskObject = JSON.parse(localStorage.getItem(activeTask));
+    const taskObject = readLocalStorage(activeTask);
     const taskStatusCircle = document.getElementById(activeTask).querySelector('.task__status');
     if (taskObject.status === false) {
         taskObject.status = true;
@@ -171,7 +181,7 @@ function eventChangeTaskStatus() {
         taskObject.status = false;
         taskStatusCircle.style.backgroundColor = 'red';
     }
-    localStorage.setItem(activeTask, JSON.stringify(taskObject));
+    appendIntoLocalStorage(activeTask, taskObject);
 };
 
 function eventDeleteTask(event) {
