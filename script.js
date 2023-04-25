@@ -127,7 +127,7 @@ function eventClickOnSaveChanges() {
             alert('Nothing to save')
         } else {
             activeTaskObject.text = changes;
-            taskDescription.innerText = changes.slice(0, 150) + '...';
+            taskDescription.innerText = changes.slice(0, 150).replace('\n', ' ') + '...';
             appendIntoLocalStorage(activeTask, activeTaskObject);
             alert('Changes have been saved!')
         }
@@ -143,13 +143,17 @@ function loadOldTasks() {
         oldTask.className = 'sidebar__task task';
         oldTask.id = inner.slice(inner.indexOf('title">')+7, inner.indexOf('</h4>'));
         oldTask.innerHTML = inner;
-        if (taskObject.status === true) {
-            oldTask.querySelector('.task__status').style.backgroundColor = 'green';
-        } else {
-            oldTask.querySelector('.task__status').style.backgroundColor = 'red';
-        }
+        const statusCircle = oldTask.querySelector('.task__status');
+        const taskDescription = oldTask.querySelector('.task__text');
 
-        oldTask.querySelector('.task__text').innerText = taskObject.text.slice(0, 150) + '...';
+        taskObject.status ?  statusCircle.style.backgroundColor = 'green' : statusCircle.style.backgroundColor = 'red';
+
+        if (taskObject.text.length > 150) {
+            taskDescription.innerText = taskObject.text.replace('\n', ' ').slice(0, 150) + '...'
+        } else {
+            taskDescription.innerText = taskObject.text.replace('\n', ' '); 
+        }
+    
         sidebar.append(oldTask);
     }
 }
