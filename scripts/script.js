@@ -49,7 +49,7 @@ function appendIntoLocalStorage(id, object) {
 }
 
 function loadOldTasks() {
-    const sidebar = document.querySelector('.sidebar');
+    const sidebar = document.querySelector('.sidebar__tasks-wrapper');
     for (let task of Object.keys(localStorage)) {
         const oldTask = document.createElement('div');
         const taskObject = readLocalStorage(task);
@@ -80,7 +80,7 @@ function generateTaskDOM(title, id) {
 
     if (title !== '' && title !== null && title.length <= 50) {
         const time = getTime()
-        const sidebar = document.querySelector('.sidebar');
+        const sidebar = document.querySelector('.sidebar__tasks-wrapper');
         const headerTaskName = document.querySelector('.header__task-title');
         const task = document.createElement('div');
         const textarea = document.querySelector('textarea');
