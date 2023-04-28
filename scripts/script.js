@@ -21,8 +21,7 @@ class Task {
 
     static create() {
         const newObject = new this();
-        const inner = newObject.element;
-        const id = inner.slice(inner.indexOf('title">')+7, inner.indexOf('</h4>'))
+        const id = newObject.title
         appendIntoLocalStorage(id, newObject);
         return newObject;
     }   
@@ -49,27 +48,28 @@ function appendIntoLocalStorage(id, object) {
     localStorage.setItem(id, JSON.stringify(object));
 }
 
-function getTime() {
-    const timeObject = {
-        now: new Date(),
-        get day() { return this.now.getDate() },
-        get month() { return this.now.getMonth()+1 },
-        get year() { return this.now.getFullYear() },
-        get hours() { return this.now.getHours() },
-        get minutes() { return this.now.getMinutes() },
+function loadOldTasks() {
+    const sidebar = document.querySelector('.sidebar');
+    for (let task of Object.keys(localStorage)) {
+        const oldTask = document.createElement('div');
+        const taskObject = readLocalStorage(task);
+        const inner = taskObject.element;
+        oldTask.className = 'sidebar__task task';
+        oldTask.id = task;
+        oldTask.innerHTML = inner;
+        const statusCircle = oldTask.querySelector('.task__status');
+        const taskDescription = oldTask.querySelector('.task__text');
 
-        *[Symbol.iterator]() {
-            for (let value of Object.keys(this)) {
-                yield this[value];
-            };
-        },
-    }
+        taskObject.status ?  statusCircle.style.backgroundColor = 'green' : statusCircle.style.backgroundColor = 'red';
 
-    Object.defineProperty(timeObject, "now", {enumerable: false});
+        if (taskObject.text.length > 150) {
+            taskDescription.innerText = taskObject.text.replace('\n', ' ').slice(0, 150) + '...'
+        } else {
+            taskDescription.innerText = taskObject.text.replace('\n', ' '); 
+        }
     
-    const timeArray = Array.from(timeObject)
-                           .map(value => value < 10 ? '0' + value.toString() : value.toString()); 
-    return `${timeArray[0]}.${timeArray[1]}.${timeArray[2]} ${timeArray[3]}:${timeArray[4]}`;
+        sidebar.append(oldTask);
+    }
 }
 
 function generateTaskDOM(title, id) {
@@ -106,7 +106,30 @@ function generateTaskDOM(title, id) {
         alert('Task name is empty, or its bigger then 50 symbols');
     };
 };
- 
+
+function getTime() {
+    const timeObject = {
+        now: new Date(),
+        get day() { return this.now.getDate() },
+        get month() { return this.now.getMonth()+1 },
+        get year() { return this.now.getFullYear() },
+        get hours() { return this.now.getHours() },
+        get minutes() { return this.now.getMinutes() },
+
+        *[Symbol.iterator]() {
+            for (let value of Object.keys(this)) {
+                yield this[value];
+            };
+        },
+    }
+
+    Object.defineProperty(timeObject, "now", {enumerable: false});
+    
+    const timeArray = Array.from(timeObject)
+                           .map(value => value < 10 ? '0' + value.toString() : value.toString()); 
+    return `${timeArray[0]}.${timeArray[1]}.${timeArray[2]} ${timeArray[3]}:${timeArray[4]}`;
+}
+
 function eventClickOnTask(event) {
     const headerTaskName = document.querySelector('.header__task-title');
     const textArea = document.querySelector('textarea');
@@ -134,47 +157,6 @@ function eventClickOnSaveChanges() {
             appendIntoLocalStorage(activeTask, activeTaskObject);
             alert('Changes have been saved!')
         }
-    }
-}
-
-function loadOldTasks() {
-    const sidebar = document.querySelector('.sidebar');
-    for (let task of Object.keys(localStorage)) {
-        const oldTask = document.createElement('div');
-        const taskObject = readLocalStorage(task);
-        const inner = taskObject.element;
-        oldTask.className = 'sidebar__task task';
-        oldTask.id = inner.slice(inner.indexOf('title">')+7, inner.indexOf('</h4>'));
-        oldTask.innerHTML = inner;
-        const statusCircle = oldTask.querySelector('.task__status');
-        const taskDescription = oldTask.querySelector('.task__text');
-
-        taskObject.status ?  statusCircle.style.backgroundColor = 'green' : statusCircle.style.backgroundColor = 'red';
-
-        if (taskObject.text.length > 150) {
-            taskDescription.innerText = taskObject.text.replace('\n', ' ').slice(0, 150) + '...'
-        } else {
-            taskDescription.innerText = taskObject.text.replace('\n', ' '); 
-        }
-    
-        sidebar.append(oldTask);
-    }
-}
-
-function eventClearAllTasks() {
-    if (confirm('Delete all the tasks?')) {
-        const taskCases = document.querySelectorAll('.task');
-        const textArea = document.querySelector('textarea');
-        const headerTaskName = document.querySelector('.header__task-title');
-        for (let taskCase of taskCases) {
-            taskCase.remove()
-        }
-        activeTask = null;
-        textArea.value = '';
-        headerTaskName.innerText = '';
-        localStorage.clear()
-    } else {
-        return 0
     }
 }
 
@@ -209,7 +191,25 @@ function eventDeleteTask(event) {
     }
 }
 
+function eventClearAllTasks() {
+    if (confirm('Delete all the tasks?')) {
+        const taskCases = document.querySelectorAll('.task');
+        const textArea = document.querySelector('textarea');
+        const headerTaskName = document.querySelector('.header__task-title');
+        for (let taskCase of taskCases) {
+            taskCase.remove()
+        }
+        activeTask = null;
+        textArea.value = '';
+        headerTaskName.innerText = '';
+        localStorage.clear()
+    } else {
+        return 0
+    }
+}
+
 loadOldTasks(); 
+
 for (let taskCase of taskCases) {
     taskCase.addEventListener('click', eventClickOnTask);
 };
